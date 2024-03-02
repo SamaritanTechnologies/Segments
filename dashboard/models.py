@@ -2,6 +2,7 @@ from django.db import models
 
 
 # Create your models here.
+from django.db.models import Sum
 from django.urls import reverse
 
 
@@ -10,6 +11,14 @@ class Segment(models.Model):
 
     def traits(self):
         return self.traits_set.all()
+
+    @property
+    def percentage_division(self):
+        total_sample_size = Segment.objects.aggregate(total=Sum('sample_size'))['total']
+        if total_sample_size == 0:
+            return 'N/A'
+
+        return f"{(self.sample_size / total_sample_size) * 100:.2f}%"
 
     def __str__(self):
         return str(self.sample_size)
