@@ -3,13 +3,12 @@ import csv
 from django.contrib import messages
 from django.shortcuts import redirect
 
-from dashboard.models import Segment, Traits
+from .models import Segment, Traits, Audience
 
 
 class CsvParser:
 
     def upload_csv(self, file):
-        print(file, 'file')
         decoded_file = file.read().decode('utf-8').splitlines()
         reader = csv.reader(decoded_file)
         headers = next(reader)
@@ -49,4 +48,7 @@ class CsvParser:
         segment = Segment.objects.create(id=segment_id, sample_size=sample_size)
         for item in traits:
             Traits.objects.create(title=item, segment=segment)
+
+    def audience_prompt(self, prompt):
+        return Audience.objects.create(prompt=prompt)
 

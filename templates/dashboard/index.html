@@ -40,13 +40,15 @@
         <h2>DEFINE AUDIENCE</h2>
       </div>
       <div class="cMRowThree">
-        <form action="">
+        <form method="post">
+            {% csrf_token %}
           <div class="cmrTBoxOne">
             <h4>Audience</h4>
           </div>
           <div class="cmrTBoxTwo">
             <input
               type="text"
+              name="prompt"
               class="form-control"
               placeholder="Enter Description of simulated audience"
             />
@@ -207,25 +209,59 @@
             <h4>Pre-Test</h4>
           </div>
           <div class="anylzBoxTwo">Upload Questions & Ask Audience</div>
+            <form method="post" action="{% url 'analyze_questions' %}" enctype="multipart/form-data">
           <div class="anylzBoxThree">
             <div class="upTraitBtnRow">
+
+                    {% csrf_token %}
+
                   <div class="uploadFileBox">
-                    <input type="file" id="upload-file" hidden accept=".csv" />
-                    <label class="btn-up" for="upload-file">Upload</label>
+                      <input type="file" name="questions" id="upload-file2" hidden accept=".csv" />
+                    <label class="btn-up" for="upload-file2">Upload</label>
                   </div>
                   <div class="uSaveBtnBox">
-                    <button type="button" class="btn saveBtn" >
+                    <button type="submit" class="btn saveBtn" >
                       Save
                     </button>
                   </div>
                   <div class="anylzBoxFour">
                     <h6>Output will download to your computer when complete</h6>
                   </div>
+
                 </div>
           </div>
+                </form>
          
         </div>
+                  <div class="anylzContRow">
+          <div class="anylzBoxOne">
+            <h4>Feedback Loop</h4>
+          </div>
+          <div class="anylzBoxTwo">Ask Audience for feedback on questions</div>
+            <form method="post" action="{% url 'analyze_questions' %}" enctype="multipart/form-data">
+          <div class="anylzBoxThree">
+            <div class="upTraitBtnRow1">
+
+                    {% csrf_token %}
+
+
+                  <div class="uSaveBtnBox">
+                    <button type="submit" class="btn saveBtn" >
+                      Save
+                    </button>
+                  </div>
+                  <div class="anylzBoxFour">
+                    <h6>Output will download to your computer when complete</h6>
+                  </div>
+
+                </div>
+          </div>
+                </form>
+
+        </div>
+
       </div>
+
       <!-- Analyz results row end -->
     </div>
   </div>

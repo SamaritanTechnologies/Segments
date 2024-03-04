@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from dashboard.models import Traits, Segment
+from dashboard.models import Traits, Segment, AnalyzeReport, Questions, Answers
 
 
 @admin.register(Traits)
@@ -12,3 +12,12 @@ class TraitsAdmin(admin.ModelAdmin):
 @admin.register(Segment)
 class UserAdmin(admin.ModelAdmin):
     list_display = ('id', 'sample_size')
+
+
+@admin.register(AnalyzeReport)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('id', 'audience', 'trait'   )
+
+
+admin.site.register(Questions)
+admin.site.register(Answers)

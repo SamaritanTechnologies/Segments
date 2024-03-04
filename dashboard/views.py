@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -6,6 +7,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView, DeleteView
 from .models import Segment
 from .scrapper import CsvParser
+import pandas as pd
+
+from .utils import AnalyzeQuestions, ExportCsv
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -17,7 +21,11 @@ class DashboardView(TemplateView):
         return render(request, self.template_name, context={"segment": segment})
 
     def post(self, request):
-        message = CsvParser().upload_traits(request)
+        prompt = request.POST.get("prompt")
+        if prompt:
+            CsvParser().audience_prompt(prompt)
+        else:
+            message = CsvParser().upload_traits(request)
         return redirect('dashboard')
 
 
@@ -39,3 +47,13 @@ class DeleteSegmentView(DeleteView):
 
     def get_success_url(self):
         return reverse('dashboard')
+
+
+class AnalyzeQuestion(View):
+
+    def post(self, request):
+        questions = request.FILES.get("questions")
+        df = pd.read_csv(questions, encoding='ISO-8859-1')
+        questions = df['Questions'].tolist()
+        created = AnalyzeQuestions().analyze_report(questions)
+        return ExportCsv().csv_export(created.audience)
