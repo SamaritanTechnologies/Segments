@@ -39,6 +39,13 @@
       <div class="cMRowTwo">
         <h2>DEFINE AUDIENCE</h2>
       </div>
+    {% if messages %}
+                 {% for message in messages %}
+                     <div class="alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                 {% endfor %}
+            {% endif %}
       <div class="cMRowThree">
         <form method="post">
             {% csrf_token %}
@@ -113,13 +120,7 @@
             <h2>Segment Output</h2>
           </div>
           <p class="mb-2 text-center">Segment Details</p>
-            {% if messages %}
-                 {% for message in messages %}
-                     <div class="alert alert-danger" role="alert">
-                        {{ message }}
-                    </div>
-                 {% endfor %}
-            {% endif %}
+
           <div class="segDetContRow" id="traits_row">
             <form action="">
               <div class="segDetRowOne">
@@ -238,7 +239,7 @@
             <h4>Feedback Loop</h4>
           </div>
           <div class="anylzBoxTwo">Ask Audience for feedback on questions</div>
-            <form method="post" action="{% url 'analyze_questions' %}" enctype="multipart/form-data">
+            <form method="post" action="{% url 'feedback_loop' %}" enctype="multipart/form-data">
           <div class="anylzBoxThree">
             <div class="upTraitBtnRow1">
 

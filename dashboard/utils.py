@@ -13,13 +13,18 @@ class AnalyzeQuestions:
         segments = Segment.objects.all()
         analyze_report_job = None
         audience = Audience.objects.last()
+        if not audience:
+            return "Please provide audience text", 400
         for segment in segments:
             for _ in range(segment.sample_size):
+
                 analyze_report_job = AnalyzeReport.objects.create(
                     segment=segment,
                     audience=audience,
                     trait=segment.traits_comma()
                 )
+                if _ > 0:
+                    analyze_report_job.loop = True
                 for count, question_text in enumerate(questions, start=0):
                     qa_history = ""
                     generated_answer = ""
@@ -37,7 +42,7 @@ class AnalyzeQuestions:
                     analyze_report_job.question.add(question)
                     analyze_report_job.answer.add(answer)
                     analyze_report_job.save()
-        return analyze_report_job
+        return analyze_report_job, 201
 
 
 class ExportCsv:
@@ -57,7 +62,6 @@ class ExportCsv:
         writer = csv.writer(response)
         writer.writerow(row)
 
-
         for rule in qs:
             # Split answer_text into a list of individual answers
             answers = [a.answer for a in rule.answer.all()]
@@ -65,6 +69,30 @@ class ExportCsv:
             answers += [''] * (len(all_questions) - len(answers))
             writer.writerow([rule.trait, rule.segment.sample_size, rule.audience.prompt] + answers)
 
+        return response
+
+    def feedback_csv(self, audience):
+        qs = AnalyzeReport.objects.filter(audience=audience, loop=False).prefetch_related(
+            'question', 'answer'
+        )
+
+        # Create the HttpResponse object with the appropriate CSV header.
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="export_feedback.csv"'
+
+        all_questions = [q.question for q in Questions.objects.filter(audience=audience)]
+        row = ['trait'] + all_questions
+        writer = csv.writer(response)
+        writer.writerow(row)
+
+        for segment in qs:
+            generated_answer = []
+            for question in all_questions:
+                prompt = f"did the question make sense: {question}"
+                openai_response = OpenAiAnalyzer().call_openai_api(prompt)
+                generated_answer.append(openai_response.choices[0].message.content)
+            writer.writerow([segment.trait] + generated_answer)
+            generated_answer = []
         return response
 
 

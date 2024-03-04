@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from dashboard.models import Traits, Segment, AnalyzeReport, Questions, Answers
+from dashboard.models import Traits, Segment, AnalyzeReport, Questions, Answers, Audience
 
 
 @admin.register(Traits)
@@ -16,8 +16,9 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(AnalyzeReport)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'audience', 'trait'   )
+    list_display = ('id', 'audience', 'trait', 'loop')
 
 
+admin.site.register(Audience)
 admin.site.register(Questions)
 admin.site.register(Answers)

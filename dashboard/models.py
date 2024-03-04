@@ -1,6 +1,5 @@
 from django.db import models
 
-
 # Create your models here.
 from django.db.models import Sum
 from django.urls import reverse
@@ -69,7 +68,7 @@ class AnalyzeReport(models.Model):
     trait = models.CharField(max_length=50)
     question = models.ManyToManyField(Questions, null=True, blank=True)
     answer = models.ManyToManyField(Answers, null=True, blank=True)
+    loop = models.BooleanField(default=False)
 
     def __str__(self):
         return self.trait
-

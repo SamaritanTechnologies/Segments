@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -5,7 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView, DeleteView
-from .models import Segment
+from .models import Segment, Audience
 from .scrapper import CsvParser
 import pandas as pd
 
@@ -55,5 +56,15 @@ class AnalyzeQuestion(View):
         questions = request.FILES.get("questions")
         df = pd.read_csv(questions, encoding='ISO-8859-1')
         questions = df['Questions'].tolist()
-        created = AnalyzeQuestions().analyze_report(questions)
+        created, status = AnalyzeQuestions().analyze_report(questions)
+        if status == 400:
+            messages.error(request, message="Please provide Audience text.")
+            return redirect('dashboard')
         return ExportCsv().csv_export(created.audience)
+
+
+class FeedbackView(View):
+
+    def post(self, request):
+        audience = Audience.objects.last()
+        return ExportCsv().feedback_csv(audience)
