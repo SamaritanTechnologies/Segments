@@ -28,7 +28,7 @@ class AnalyzeQuestions:
                 for count, question_text in enumerate(questions, start=0):
                     qa_history = ""
                     generated_answer = ""
-                    prompt = f"Past Questions and Answers:{qa_history} Traits: {segment.traits_comma()} Question: {question_text}."
+                    prompt = f"Audience:{audience.prompt} Past Questions and Answers:{qa_history} Traits: {segment.traits_comma()} Question: {question_text}."
                     try:
                         response = OpenAiAnalyzer().call_openai_api(prompt)
                         generated_answer = response.choices[0].message.content

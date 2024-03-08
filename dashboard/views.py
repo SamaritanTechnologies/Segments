@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -22,12 +23,19 @@ class DashboardView(TemplateView):
         return render(request, self.template_name, context={"segment": segment})
 
     def post(self, request):
+        data = dict()
         prompt = request.POST.get("prompt")
         if prompt:
             CsvParser().audience_prompt(prompt)
+            return JsonResponse(data={"message": "Prompt created"}, safe=False, status=200)
         else:
             message = CsvParser().upload_traits(request)
-        return redirect('dashboard')
+            segments = Segment.objects.all()
+            context = {
+                "segment": segments
+            }
+            data['all_segments'] = render_to_string("dashboard/segments_json.html", context=context)
+            return JsonResponse(data, safe=False, status=200)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -37,8 +45,14 @@ class UpdateSegmentTraitsView(View):
         return Segment.objects.get(id=self.kwargs.get("pk"))
 
     def post(self, request, *args, **kwargs):
+        data = dict()
         message = CsvParser().update_segment(request, self.get_object())
-        return redirect('dashboard')
+        segments = Segment.objects.all()
+        context = {
+            "segment": segments
+        }
+        data['all_segments'] = render_to_string("dashboard/segments_json.html", context=context)
+        return JsonResponse(data, safe=False, status=200)
 
 
 @method_decorator(csrf_exempt, name='dispatch')

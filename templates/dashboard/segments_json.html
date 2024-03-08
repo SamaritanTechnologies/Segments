@@ -1,0 +1,24 @@
+{% for segment in segment %}
+            <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+              <td>{{ segment.traits.0.title }}</td>
+              <td id="segment_id" hidden>{{ segment.id }}</td>
+              <td>{{ segment.traits.1.title }}</td>
+              <td>{{ segment.traits.2.title }}</td>
+              <td>{{ segment.traits.3.title }}</td>
+              <td>{{ segment.traits.4.title }}</td>
+              <td>{{ segment.traits.5.title }}</td>
+              <td>{{ segment.traits.6.title }}</td>
+              <td class="sample_size_value">{{ segment.sample_size }}</td>
+              <td class="percentage">{{ segment.percentage_division }}</td>
+              <td>
+                <div class="segDetBtnRow">
+                  <button type="button" class="btn saveBtn" id="edit_segment">Edit</button>
+                    <button type="button" class="btn saveBtn dltBtn" data-toggle="modal" data-target="#exampleModal_{{ segment.id }}">
+                      Delete
+                    </button>
+                </div>
+              </td>
+            </tr>
+              {% include 'dashboard/delete_segment.html' with object=segment %}
+          {% endfor %}
