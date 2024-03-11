@@ -23,11 +23,14 @@ class Segment(models.Model):
 
     @property
     def percentage_division(self):
-        total_sample_size = Segment.objects.aggregate(total=Sum('sample_size'))['total']
-        if total_sample_size == 0:
-            return 'N/A'
+        if self.sample_size:
+            total_sample_size = Segment.objects.aggregate(total=Sum('sample_size'))['total']
+            if total_sample_size == 0:
+                return 'N/A'
 
-        return f"{(self.sample_size / total_sample_size) * 100:.2f}%"
+            return f"{(self.sample_size / total_sample_size) * 100:.2f}%"
+        else:
+            return 0
 
     def __str__(self):
         return str(self.sample_size)
