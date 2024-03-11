@@ -357,6 +357,8 @@
             success: function (data){
                 $("#all_segments").html(data.all_segments)
                 $(".remove-later").remove();
+                traits = []
+                $("#sample_size").val('');
             }
         })
     })
@@ -435,9 +437,12 @@
             success: function (data){
                 $("#all_segments").html(data.all_segments)
                 $(".edit_segments").remove()
+                $(".remove-later").remove();
+                traitsList = []
+                $("#sample_size").val('');
             },
             error: function (xhr, status, error) {
-
+                traitsList = []
             }
         })
 
