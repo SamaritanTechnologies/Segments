@@ -30,6 +30,8 @@ class DashboardView(TemplateView):
             return JsonResponse(data={"message": "Prompt created"}, safe=False, status=200)
         else:
             message = CsvParser().upload_traits(request)
+            if message == "file":
+                return redirect('dashboard')
             segments = Segment.objects.all()
             context = {
                 "segment": segments

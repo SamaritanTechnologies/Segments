@@ -14,12 +14,15 @@ class CsvParser:
         headers = next(reader)
         for row in reader:
             data = dict(zip(headers, row))
-            sample_size = data['sample_size']
+            try:
+                sample_size = data['sample_size']
+            except:
+                return "file"
             segment = Segment.objects.create(sample_size=sample_size)
             for key, value in data.items():
                 if key != "sample_size" and value != "":
                     Traits.objects.create(title=value, segment=segment)
-        return redirect('dashboard')
+        return "file"
 
     def upload_traits(self, request):
         sample_size = request.POST.get("sample_size")
@@ -30,7 +33,8 @@ class CsvParser:
         traits = request.POST.getlist("traits[]")
         file = request.FILES.get('csvfile')
         if file:
-            self.upload_csv(file)
+            csv_file = self.upload_csv(file)
+            return csv_file
         else:
             segment = Segment.objects.create(sample_size=sample_size)
             for item in traits:
@@ -51,4 +55,3 @@ class CsvParser:
 
     def audience_prompt(self, prompt):
         return Audience.objects.create(prompt=prompt)
-
