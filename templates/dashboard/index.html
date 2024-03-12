@@ -52,6 +52,10 @@
            <div class="alert alert-success" role="alert" id="success_audience" hidden>
               Prompt added!
             </div>
+
+          <div class="alert alert-danger" role="alert" id="csv_format" hidden>
+              Csv format is wrong!
+            </div>
         <form method="post">
             {% csrf_token %}
           <div class="cmrTBoxOne">
@@ -114,7 +118,7 @@
                          <!-- Added to display file name -->
 
                   <div class="uSaveBtnBox">
-                    <button type="submit" class="btn saveBtn">
+                    <button id="upload_segments_csv" type="button" class="btn saveBtn">
                       Save
                     </button>
                   </div>
@@ -490,5 +494,51 @@ document.getElementById('upload-file2').addEventListener('change', function() {
 });
 
   </script>
+
+
+  <script>
+    $(document).ready(function() {
+        // When the file input changes (i.e., a file is selected), display its name
+        $('#upload-file').change(function() {
+            var fileName = $(this).val().split('\\').pop(); // Get the file name without the path
+            $('#file-name').text('Selected file: ' + fileName);
+        });
+
+        // When the Save button is clicked
+        $('#upload_segments_csv').click(function() {
+            var fileData = $('#upload-file').prop('files')[0]; // Get the file data
+            var formData = new FormData(); // Create a FormData object to send file data
+
+            // Append the file data to FormData object with the name 'file'
+            formData.append('csvfile', fileData);
+
+            // Send AJAX request
+            $.ajax({
+                url: '{% url 'dashboard' %}',
+                type: 'POST', // Request type
+                data: formData, // Data to send
+                processData: false, // Don't process the data
+                contentType: false, // Don't set contentType
+                success: function(response) {
+                    // Handle success response
+                    $("#all_segments").html(response.all_segments)
+                    if (response.csv_file === "file"){
+                        $("#csv_format").removeAttr('hidden');
+                    setTimeout(function() {
+                        $("#csv_format").attr('hidden', true);
+                    }, 5000);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Handle error
+                    console.error('Error uploading file:', error);
+                }
+            });
+        });
+    });
+</script>
+
+
+
   </body>
 </html>

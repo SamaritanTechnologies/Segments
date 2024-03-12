@@ -22,7 +22,7 @@ class CsvParser:
             for key, value in data.items():
                 if key != "sample_size" and value != "":
                     Traits.objects.create(title=value, segment=segment)
-        return "file"
+        return "created"
 
     def upload_traits(self, request):
         sample_size = request.POST.get("sample_size")

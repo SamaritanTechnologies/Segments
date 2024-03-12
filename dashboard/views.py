@@ -20,7 +20,8 @@ class DashboardView(TemplateView):
 
     def get(self, request):
         segment = Segment.objects.all()
-        return render(request, self.template_name, context={"segment": segment})
+        segment.delete()
+        return render(request, self.template_name)
 
     def post(self, request):
         data = dict()
@@ -30,13 +31,12 @@ class DashboardView(TemplateView):
             return JsonResponse(data={"message": "Prompt created"}, safe=False, status=200)
         else:
             message = CsvParser().upload_traits(request)
-            if message == "file":
-                return redirect('dashboard')
             segments = Segment.objects.all()
             context = {
                 "segment": segments
             }
             data['all_segments'] = render_to_string("dashboard/segments_json.html", context=context)
+            data['csv_file'] = message
             return JsonResponse(data, safe=False, status=200)
 
 
