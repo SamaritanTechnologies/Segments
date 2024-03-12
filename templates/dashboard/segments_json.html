@@ -1,4 +1,5 @@
 {% for segment in segment %}
+    {% include 'dashboard/delete_segment.html' with object=segment %}
             <tr>
             <th scope="row">{{ forloop.counter }}</th>
               <td>{{ segment.traits.0.title }}</td>
@@ -14,11 +15,11 @@
               <td>
                 <div class="segDetBtnRow">
                   <button type="button" class="btn saveBtn" id="edit_segment">Edit</button>
-                    <button type="button" class="btn saveBtn dltBtn" data-toggle="modal" data-target="#exampleModal_{{ segment.id }}">
+                    <button type="submit" class="btn saveBtn dltBtn" data-toggle="modal" id="delete_segment" delete_segment_id={{ segment.id }}>
                       Delete
                     </button>
                 </div>
               </td>
             </tr>
-              {% include 'dashboard/delete_segment.html' with object=segment %}
+
           {% endfor %}

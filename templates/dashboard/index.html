@@ -200,13 +200,13 @@
               <td>
                 <div class="segDetBtnRow">
                   <button type="button" class="btn saveBtn" id="edit_segment">Edit</button>
-                    <button type="button" class="btn saveBtn dltBtn" data-toggle="modal" data-target="#exampleModal_{{ segment.id }}">
+                    <button type="button" class="btn saveBtn dltBtn" data-toggle="modal" id="delete_segment">
                       Delete
                     </button>
                 </div>
               </td>
             </tr>
-              {% include 'dashboard/delete_segment.html' with object=segment %}
+
           {% endfor %}
           </tbody>
         </table>
@@ -537,6 +537,29 @@ document.getElementById('upload-file2').addEventListener('change', function() {
         });
     });
 </script>
+
+
+  <script>
+      $(document).ready(function() {
+    $(document).on('click', '#delete_segment', function() {
+        var deleteSegmentId = $(this).attr('delete_segment_id');
+        $.ajax({
+                url: `/delete/`+deleteSegmentId+'/',
+                type: 'GET', // Request type
+                data: '', // Data to send
+                success: function(response) {
+                    // Handle success response
+                    $("#all_segments").html(response.all_segments)
+
+                },
+            });
+
+
+    });
+});
+
+
+            </script>
 
 
 

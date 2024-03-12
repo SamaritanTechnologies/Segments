@@ -58,12 +58,18 @@ class UpdateSegmentTraitsView(View):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class DeleteSegmentView(DeleteView):
-    template_name = 'dashboard/delete_segment.html'
-    model = Segment
+class DeleteSegmentView(View):
 
-    def get_success_url(self):
-        return reverse('dashboard')
+    def get(self, request, *args, **kwargs):
+        data = dict()
+        segment_id = kwargs.get('pk')
+        Segment.objects.get(id=segment_id).delete()
+        segments = Segment.objects.all()
+        context = {
+            "segment": segments
+        }
+        data['all_segments'] = render_to_string("dashboard/segments_json.html", context=context)
+        return JsonResponse(data, safe=False, status=200)
 
 
 class AnalyzeQuestion(View):
