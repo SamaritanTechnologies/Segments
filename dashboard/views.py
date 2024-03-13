@@ -10,7 +10,7 @@ from .email_service import Multiprocess
 from .models import Segment, Audience
 from .scrapper import CsvParser, in_memory_file_to_temp, data_scrap
 
-from .utils import ExportCsv
+from .utils import ExportCsv, DeleteObjectsOnRefresh
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -18,8 +18,7 @@ class DashboardView(TemplateView):
     template_name = 'dashboard/index.html'
 
     def get(self, request):
-        segment = Segment.objects.all()
-        segment.delete()
+        DeleteObjectsOnRefresh().delete_instances()
         return render(request, self.template_name)
 
     def post(self, request):

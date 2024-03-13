@@ -69,7 +69,6 @@ class CSVToJsonParser:
         header = ['questions']
         for row, query_obj in enumerate(self.data, 1):
             for data in header:
-                print(query_obj.get(data), 'data')
                 if query_obj.get(data) == 'None':
                     product_title.append(f"{data} is missing on row number {row}")
         return product_title

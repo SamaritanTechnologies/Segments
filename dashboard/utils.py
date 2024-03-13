@@ -3,13 +3,25 @@ from django.conf import settings
 client = OpenAI(api_key=settings.OPENAI_API_KEY)
 import csv
 from django.http import HttpResponse
-from .models import Segment, AnalyzeReport, Questions, Answers
+from .models import Segment, AnalyzeReport, Questions, Answers, Traits, Audience
+
+
+class DeleteObjectsOnRefresh:
+
+    def delete_instances(self):
+        Questions.objects.all().delete()
+        Answers.objects.all().delete()
+        AnalyzeReport.objects.all().delete()
+        Audience.objects.all().delete()
+        Segment.objects.all().delete()
+        Traits.objects.all().delete()
 
 
 class AnalyzeQuestions:
 
-    def analyze_report(self, questions, audience):
+    def analyze_report(self, questions, audience_text):
         segments = Segment.objects.all()
+        audience = Audience.objects.create(prompt=audience_text)
         analyze_report_job = None
         for segment in segments:
             for _ in range(segment.sample_size):
