@@ -8,3 +8,4 @@
 *.jpg
 *.png
 *.logsendgrid.env
+tmp/

@@ -1,17 +1,16 @@
-from django.contrib import messages
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import TemplateView, DeleteView
-from .models import Segment, Audience
-from .scrapper import CsvParser
-import pandas as pd
+from django.views.generic import TemplateView
 
-from .utils import AnalyzeQuestions, ExportCsv
+from .email_service import Multiprocess
+from .models import Segment, Audience
+from .scrapper import CsvParser, in_memory_file_to_temp, data_scrap
+
+from .utils import ExportCsv
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -72,17 +71,26 @@ class DeleteSegmentView(View):
         return JsonResponse(data, safe=False, status=200)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class AnalyzeQuestion(View):
 
     def post(self, request):
-        questions = request.FILES.get("questions")
-        df = pd.read_csv(questions, encoding='ISO-8859-1')
-        questions = df['Questions'].tolist()
-        created, status = AnalyzeQuestions().analyze_report(questions)
+        email = request.POST.get("email")
+        audience = request.POST.get("audience")
+        if not email:
+            return JsonResponse(data={"error_message": "Please enter your email", "status": 400}, safe=False)
+        file = request.FILES.get('questions')
+        file_path = in_memory_file_to_temp(file)
+        scrap, status = data_scrap(file_path, request, audience)
         if status == 400:
-            messages.error(request, message="Please provide Audience text.")
-            return redirect('dashboard')
-        return ExportCsv().csv_export(created.audience)
+            return JsonResponse(data={"error_message": scrap, "status": 400}, safe=False)
+        csv_report = ExportCsv().csv_export(scrap.audience)
+        Multiprocess().process_to_send_emails(email=email, attachment_content=csv_report,
+                                              attachment_filename="export_file.csv",
+                                              attachment_content_type="text/csv")
+        return JsonResponse(
+            data={"success_message": "Thank you. We will email you your results shortly!", "status": 200},
+            safe=False)
 
 
 class FeedbackView(View):

@@ -1,20 +1,16 @@
 from openai import OpenAI
 from django.conf import settings
-
 client = OpenAI(api_key=settings.OPENAI_API_KEY)
 import csv
 from django.http import HttpResponse
-from .models import Segment, AnalyzeReport, Audience, Questions, Answers
+from .models import Segment, AnalyzeReport, Questions, Answers
 
 
 class AnalyzeQuestions:
 
-    def analyze_report(self, questions):
+    def analyze_report(self, questions, audience):
         segments = Segment.objects.all()
         analyze_report_job = None
-        audience = Audience.objects.last()
-        if not audience:
-            return "Please provide audience text", 400
         for segment in segments:
             for _ in range(segment.sample_size):
 
@@ -63,12 +59,9 @@ class ExportCsv:
         writer.writerow(row)
 
         for rule in qs:
-            # Split answer_text into a list of individual answers
             answers = [a.answer for a in rule.answer.all()]
-            # Make sure answers list has the same length as all_questions
             answers += [''] * (len(all_questions) - len(answers))
             writer.writerow([rule.trait, rule.segment.sample_size, rule.audience.prompt] + answers)
-
         return response
 
     def feedback_csv(self, audience):

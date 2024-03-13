@@ -1,9 +1,83 @@
 import csv
+import os
 
+import pandas as pd
 from django.contrib import messages
-from django.shortcuts import redirect
-
 from .models import Segment, Traits, Audience
+from .utils import AnalyzeQuestions
+
+
+def in_memory_file_to_temp(in_memory_file):
+    # path = default_storage.save('tmp/%s' % in_memory_file.name, ContentFile(in_memory_file.read()))
+
+    is_folder = os.path.isdir('tmp')
+
+    if not is_folder:
+        os.makedirs('tmp')
+
+    path = 'tmp/%s' % in_memory_file.name
+    product_csv = open(path, 'wb')
+    product_csv.write(in_memory_file.read())
+    return path
+
+
+class DataframeUtil(object):
+    @staticmethod
+    def get_validated_dataframe(path: str) -> pd.DataFrame:
+        df = pd.read_csv(path, dtype=str, on_bad_lines='skip', encoding='ISO-8859-1')
+        df.columns = df.columns.str.lower()
+        df = df.fillna(-1)
+        return df.mask(df == -1, None)
+
+
+ANALYZER_HEADER = ['questions']
+
+
+def data_scrap(file_path, request, audience):
+    dataframe = DataframeUtil.get_validated_dataframe(file_path)
+    parser_obj = CSVToJsonParser(dataframe, request, audience)
+    headers = parser_obj.get_header()
+    if headers:
+        return headers, 400
+    titles = parser_obj.get_titles()
+    if titles:
+        return titles, 400
+    created, status = parser_obj.get_data()
+    return created, status
+
+
+class CSVToJsonParser:
+
+    def __init__(self, df, request, audience):
+        self.request = request
+        self.audience = audience
+        self.df = df
+        self.df.columns = self.df.columns.str.replace('\n', '')
+        self.df.columns = self.df.columns.str.strip()
+        self.df = self.df.fillna('None')
+        self.header = self.df.columns.ravel()
+        self.data = self.df.to_dict(orient='records')
+
+    def get_header(self):
+        default_header = set(ANALYZER_HEADER)
+        difference = default_header.difference(set(self.header))
+        if difference:
+            return f"please enter the correct header {difference}"
+
+    def get_titles(self):
+        product_title = []
+        header = ['questions']
+        for row, query_obj in enumerate(self.data, 1):
+            for data in header:
+                print(query_obj.get(data), 'data')
+                if query_obj.get(data) == 'None':
+                    product_title.append(f"{data} is missing on row number {row}")
+        return product_title
+
+    def get_data(self):
+        questions_data = [question['questions'] for question in self.data]
+        created, status = AnalyzeQuestions().analyze_report(questions_data, self.audience)
+        return created, status
 
 
 class CsvParser:

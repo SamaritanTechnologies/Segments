@@ -1,364 +1,379 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>Index Page</title>
-    <link rel="icon" type="image/x-icon" href="{% static 'images/MainLogo.svg' %}" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
-    <link rel="stylesheet" type="text/css" href="{% static 'css/allstyles.css' %}" />
+    <link rel="icon" type="image/x-icon" href="{% static 'images/MainLogo.svg' %}"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/allstyles.css' %}"/>
     <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+            rel="stylesheet"
+            type="text/css"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
     />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
-      rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+            rel="stylesheet"
     />
-    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
-  </head>
-  <div id="wrapper">
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}"/>
+</head>
+<div id="wrapper">
 
     <div class="topHeader">
-      <p>Proprietary & Confidential. All Rights Reserved. Avenue Group 2024.</p>
-         <div class="logoRow">
-      <img src="{% static 'images/traitslogo.jpeg' %}" alt="" />
-    </div>
+        <p>Proprietary & Confidential. All Rights Reserved. Avenue Group 2024.</p>
+        <div class="logoRow">
+            <img src="{% static 'images/traitslogo.jpeg' %}" alt=""/>
+        </div>
     </div>
 
     <div class="contentMain">
-      <div class="cMRowOne">
-        <h1>
-          AI-POWERED AUDIENCE SIMULATOR
-        </h1>
-        <h1>( Release 1.0 )</h1>
-      </div>
-      <div class="cMRowTwo">
-        <h2>DEFINE AUDIENCE</h2>
-      </div>
-    {% if messages %}
-                 {% for message in messages %}
-                     <div class="alert alert-danger" role="alert">
-                        {{ message }}
+        <div class="cMRowOne">
+            <h1>
+                AI-POWERED AUDIENCE SIMULATOR
+            </h1>
+            <h1>( Release 1.0 )</h1>
+        </div>
+        <div class="cMRowTwo">
+            <h2>DEFINE AUDIENCE</h2>
+        </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="cMRowThree">
+            <div class="alert alert-success" role="alert" id="success_audience" hidden>
+                Prompt added!
+            </div>
+
+            <div class="alert alert-danger" role="alert" id="csv_format" hidden>
+                Csv format is wrong!
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="cmrTBoxOne">
+                    <h4>Audience</h4>
+                </div>
+                <div class="cmrTBoxTwo">
+                    <input
+                            id="audience_desc"
+                            type="text"
+                            name="prompt"
+                            class="form-control"
+                            placeholder="Enter Description of simulated audience"
+                    />
+                </div>
+                <div class="cmrTBoxThree">
+                    <button type="button" class="saveBtn" id="audience_desc_btn">Save</button>
+                </div>
+            </form>
+        </div>
+        <!-- segment row  -->
+        <div class="segmentRow">
+            <div class="segmentLeft">
+                <div class="cMRowTwo mb-2">
+                    <h2>Create Segment</h2>
+                </div>
+                <p class="mb-2 text-center">Input Trails to Define Each Segments</p>
+
+                <div class="cMRowThree">
+                    <form action="">
+                        <div class="cmrTBoxOne">
+                            <h4>Segment Trails</h4>
+                        </div>
+                        <div class="cmrTBoxTwo">
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Enter Each trait"
+                                    id="enter_trait"
+                            />
+                        </div>
+                        <div class="cmrTBoxThree">
+                            <button type="button" class="saveBtn" id="add_traits">ADD</button>
+                        </div>
+                    </form>
+                </div>
+
+                <h1 class="text-center">OR</h1>
+
+                <div class="uploadRow">
+                    <div class="uploadContRow">
+                        <h4 class="text-center">Upload All Segment Trait Data</h4>
+                        <form method="post" class="uploadTraitForm" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="upTraitBtnRow">
+                                <div class="fileNameDisplay" id="file-name-display"></div>
+                                <div class="uploadFileBox">
+                                    <input type="file" name="csvfile" id="upload-file" hidden accept=".csv"/>
+                                    <label class="btn-up" for="upload-file">Upload</label>
+                                </div>
+                                <!-- Added to display file name -->
+
+                                <div class="uSaveBtnBox">
+                                    <button id="upload_segments_csv" type="button" class="btn saveBtn">
+                                        Save
+                                    </button>
+                                </div>
+
+                            </div>
+                        </form>
                     </div>
-                 {% endfor %}
-            {% endif %}
-      <div class="cMRowThree">
-           <div class="alert alert-success" role="alert" id="success_audience" hidden>
-              Prompt added!
+                </div>
+            </div>
+            <div class="segmentRight">
+                <div class="cMRowTwo mb-2">
+                    <h2>Segment Output</h2>
+                </div>
+                <p class="mb-2 text-center">Segment Details</p>
+
+                <div class="segDetContRow" id="traits_row">
+                    <form action="">
+                        <div class="segDetRowOne">
+                            <h4>Segment 1</h4>
+                            <div class="segDetBtnRow">
+                                <button type="button" class="btn saveBtn dltBtn">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="segDetRowOne">
+                            <h3>Sample Size</h3>
+                            <div class="segDetBtnRow">
+                                <input type="text" id="sample_size" class="form-control"/>
+                                <button type="button" class="btn saveBtn" id="save_traits">Save</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- <div class="segDetRight"></div> -->
+                </div>
+            </div>
+        </div>
+        <!-- segment row end  -->
+
+        <!-- review and modify segment row  -->
+        <div class="revModSegRow">
+            <div class="cMRowTwo">
+                <h2>REVIEW & MODIFY SEGMENTS</h2>
+            </div>
+            <!-- REVIEW AND MODIFY TABLE  -->
+            <table class="table table-bordered revModSegtable table-responsive">
+                <thead>
+                <tr>
+
+                    <th scope="col">Seg#1</th>
+                    <th scope="col">Trait 1</th>
+                    <th scope="col">Trait 2</th>
+                    <th scope="col">Trait 3</th>
+                    <th scope="col">Trait 4</th>
+                    <th scope="col">Trait 5</th>
+                    <th scope="col">Trait 6</th>
+                    <th scope="col">Trait 7</th>
+                    <th scope="col">Sample</th>
+                    <th scope="col">% of Total</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody id="all_segments">
+                {% for segment in segment %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ segment.traits.0.title }}</td>
+                        <td id="segment_id" hidden>{{ segment.id }}</td>
+                        <td>{{ segment.traits.1.title }}</td>
+                        <td>{{ segment.traits.2.title }}</td>
+                        <td>{{ segment.traits.3.title }}</td>
+                        <td>{{ segment.traits.4.title }}</td>
+                        <td>{{ segment.traits.5.title }}</td>
+                        <td>{{ segment.traits.6.title }}</td>
+                        <td class="sample_size_value">{{ segment.sample_size }}</td>
+                        <td class="percentage">{{ segment.percentage_division }}</td>
+                        <td>
+                            <div class="segDetBtnRow">
+                                <button type="button" class="btn saveBtn" id="edit_segment">Edit</button>
+                                <button type="button" class="btn saveBtn dltBtn" data-toggle="modal"
+                                        id="delete_segment">
+                                    Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- review and modify segment row end  -->
+
+        <!-- Analyz results row  -->
+        <div class="anaylyzRow">
+            <div class="cMRowTwo">
+                <h2>ANAYLZE RESULTS</h2>
             </div>
 
-          <div class="alert alert-danger" role="alert" id="csv_format" hidden>
-              Csv format is wrong!
+            <div class="alert alert-success" role="alert" id="success_analyze" hidden>
+                <p id="success_message"></p>
             </div>
-        <form method="post">
-            {% csrf_token %}
-          <div class="cmrTBoxOne">
-            <h4>Audience</h4>
-          </div>
-          <div class="cmrTBoxTwo">
-            <input
-                    id="audience_desc"
-              type="text"
-              name="prompt"
-              class="form-control"
-              placeholder="Enter Description of simulated audience"
-            />
-          </div>
-          <div class="cmrTBoxThree">
-            <button type="button" class="saveBtn" id="audience_desc_btn">Save</button>
-          </div>
-        </form>
-      </div>
-      <!-- segment row  -->
-      <div class="segmentRow">
-        <div class="segmentLeft">
-          <div class="cMRowTwo mb-2">
-            <h2>Create Segment</h2>
-          </div>
-          <p class="mb-2 text-center">Input Trails to Define Each Segments</p>
 
-          <div class="cMRowThree">
-            <form action="">
-              <div class="cmrTBoxOne">
-                <h4>Segment Trails</h4>
-              </div>
-              <div class="cmrTBoxTwo">
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Enter Each trait"
-                  id="enter_trait"
-                />
-              </div>
-              <div class="cmrTBoxThree">
-                <button type="button" class="saveBtn" id="add_traits">ADD</button>
-              </div>
-            </form>
-          </div>
-
-          <h1 class="text-center">OR</h1>
-
-          <div class="uploadRow">
-            <div class="uploadContRow">
-              <h4 class="text-center">Upload All Segment Trait Data</h4>
-              <form method="post" class="uploadTraitForm" enctype="multipart/form-data">
-                  {% csrf_token %}
-                <div class="upTraitBtnRow">
-                    <div class="fileNameDisplay" id="file-name-display"></div>
-                  <div class="uploadFileBox">
-                    <input type="file" name="csvfile" id="upload-file" hidden accept=".csv" />
-                    <label class="btn-up" for="upload-file">Upload</label>
-                  </div>
-                         <!-- Added to display file name -->
-
-                  <div class="uSaveBtnBox">
-                    <button id="upload_segments_csv" type="button" class="btn saveBtn">
-                      Save
-                    </button>
-                  </div>
-                  
-                </div>
-              </form>
+            <div class="alert alert-danger" role="alert" id="failed_analyze" hidden>
+                <p id="error_message"></p>
             </div>
-          </div>
-        </div>
-        <div class="segmentRight">
-          <div class="cMRowTwo mb-2">
-            <h2>Segment Output</h2>
-          </div>
-          <p class="mb-2 text-center">Segment Details</p>
 
-          <div class="segDetContRow" id="traits_row">
-            <form action="">
-              <div class="segDetRowOne">
-                <h4>Segment 1</h4>
-                <div class="segDetBtnRow">
-                  <button type="button" class="btn saveBtn dltBtn">
-                    Delete
-                  </button>
+            <div class="">
+                <input id="email" name="email" type="email" placeholder="Enter Your Email" class="form-control"
+                       style="border: 1px solid"/>
+            </div>
+
+            <div class="anylzContRow">
+                <div class="anylzBoxOne">
+                    <h4>Pre-Test</h4>
                 </div>
-              </div>
+                <div class="anylzBoxTwo">Upload Questions & Ask Audience</div>
 
-              <div class="segDetRowOne">
-                <h3>Sample Size</h3>
-                <div class="segDetBtnRow">
-                  <input type="text" id="sample_size" class="form-control" />
-                  <button type="button" class="btn saveBtn" id="save_traits">Save</button>
+
+                <div class="anylzBoxThree">
+                    <div class="upTraitBtnRow">
+                        <div class="fileNameDisplay" id="file-name-display2"></div>
+                        <div class="uploadFileBox">
+                            <input type="file" name="questions" id="upload-file2" hidden accept=".csv"/>
+                            <label class="btn-up" for="upload-file2">Upload</label>
+                        </div>
+                        <!-- Added to display file name -->
+                        <div class="uSaveBtnBox">
+                            <button type="button" class="btn saveBtn" id="analyze_report_btn">
+                                Save
+                            </button>
+                        </div>
+                        <div class="anylzBoxFour">
+                            <h6>Output will download to your computer when complete</h6>
+                        </div>
+
+                    </div>
                 </div>
-              </div>
-            </form>
+            </div>
 
-            <!-- <div class="segDetRight"></div> -->
-          </div>
-        </div>
-      </div>
-      <!-- segment row end  -->
-
-      <!-- review and modify segment row  -->
-      <div class="revModSegRow">
-        <div class="cMRowTwo">
-          <h2>REVIEW & MODIFY SEGMENTS</h2>
-        </div>
-        <!-- REVIEW AND MODIFY TABLE  -->
-        <table class="table table-bordered revModSegtable table-responsive">
-          <thead>
-            <tr>
-
-              <th scope="col">Seg#1</th>
-              <th scope="col">Trait 1</th>
-              <th scope="col">Trait 2</th>
-              <th scope="col">Trait 3</th>
-              <th scope="col">Trait 4</th>
-              <th scope="col">Trait 5</th>
-              <th scope="col">Trait 6</th>
-              <th scope="col">Trait 7</th>
-              <th scope="col">Sample</th>
-              <th scope="col">% of Total</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody id="all_segments">
-          {% for segment in segment %}
-            <tr>
-            <th scope="row">{{ forloop.counter }}</th>
-              <td>{{ segment.traits.0.title }}</td>
-              <td id="segment_id" hidden>{{ segment.id }}</td>
-              <td>{{ segment.traits.1.title }}</td>
-              <td>{{ segment.traits.2.title }}</td>
-              <td>{{ segment.traits.3.title }}</td>
-              <td>{{ segment.traits.4.title }}</td>
-              <td>{{ segment.traits.5.title }}</td>
-              <td>{{ segment.traits.6.title }}</td>
-              <td class="sample_size_value">{{ segment.sample_size }}</td>
-              <td class="percentage">{{ segment.percentage_division }}</td>
-              <td>
-                <div class="segDetBtnRow">
-                  <button type="button" class="btn saveBtn" id="edit_segment">Edit</button>
-                    <button type="button" class="btn saveBtn dltBtn" data-toggle="modal" id="delete_segment">
-                      Delete
-                    </button>
-                </div>
-              </td>
-            </tr>
-
-          {% endfor %}
-          </tbody>
-        </table>
-      </div>
-      <!-- review and modify segment row end  -->
-
-      <!-- Analyz results row  -->
-      <div class="anaylyzRow">
-        <div class="cMRowTwo">
-          <h2>ANAYLZE RESULTS</h2>
-        </div>
-        <div class="anylzContRow">
-          <div class="anylzBoxOne">
-            <h4>Pre-Test</h4>
-          </div>
-          <div class="anylzBoxTwo">Upload Questions & Ask Audience</div>
-            <form method="post" action="{% url 'analyze_questions' %}" enctype="multipart/form-data">
-          <div class="anylzBoxThree">
-            <div class="upTraitBtnRow">
-
-                    {% csrf_token %}
-                    <div class="fileNameDisplay" id="file-name-display2"></div>
-                  <div class="uploadFileBox">
-                      <input type="file" name="questions" id="upload-file2" hidden accept=".csv" />
-                    <label class="btn-up" for="upload-file2">Upload</label>
-                  </div>
-                  <!-- Added to display file name -->
-                  <div class="uSaveBtnBox">
-                    <button type="submit" class="btn saveBtn" >
-                      Save
-                    </button>
-                  </div>
-                  <div class="anylzBoxFour">
-                    <h6>Output will download to your computer when complete</h6>
-                  </div>
-
-                </div>
-          </div>
-                </form>
-         
-        </div>
-                  <div class="anylzContRow">
-          <div class="anylzBoxOne">
-            <h4>Feedback Loop</h4>
-          </div>
-          <div class="anylzBoxTwo">Ask Audience for feedback on questions</div>
             <form method="post" action="{% url 'feedback_loop' %}" enctype="multipart/form-data">
-          <div class="anylzBoxThree">
-            <div class="upTraitBtnRow1">
+                <div class="anylzContRow">
 
                     {% csrf_token %}
+                    <div class="anylzBoxOne">
+                        <h4>Feedback Loop</h4>
+                    </div>
+                    <div class="anylzBoxTwo">Ask Audience for feedback on questions</div>
 
+                    <div class="anylzBoxThree">
+                        <div class="upTraitBtnRow1">
 
-                  <div class="uSaveBtnBox">
-                    <button type="submit" class="btn saveBtn" >
-                      Save
-                    </button>
-                  </div>
-                  <div class="anylzBoxFour">
-                    <h6>Output will download to your computer when complete</h6>
-                  </div>
+                            <div class="uSaveBtnBox">
+                                <button type="submit" class="btn saveBtn">
+                                    Save
+                                </button>
+                            </div>
+                            <div class="anylzBoxFour">
+                                <h6>Output will download to your computer when complete</h6>
+                            </div>
+
+                        </div>
+                    </div>
+
 
                 </div>
-          </div>
-                </form>
+            </form>
+
 
         </div>
 
-      </div>
-
-      <!-- Analyz results row end -->
+        <!-- Analyz results row end -->
     </div>
-  </div>
+</div>
 
-  <body>
-    <script type="text/javascript " src="{% static 'js/jquery.min.js' %} "></script>
-    <script src="{% static 'js/plugins.js' %} "></script>
-    <script src="{% static 'js/system.js' %} "></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<body>
+<script type="text/javascript " src="{% static 'js/jquery.min.js' %} "></script>
+<script src="{% static 'js/plugins.js' %} "></script>
+<script src="{% static 'js/system.js' %} "></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-  <script>
+<script>
 
     var traits = []
     var traitsList = [];
-    $(document).ready(function() {
+    $(document).ready(function () {
 
-    $("#add_traits").on('click', function () {
-        var traitValue = $("#enter_trait").val();
-        if (traitValue === '') {
-            alert("Please enter trait value")
-        } else {
+        $("#add_traits").on('click', function () {
+            var traitValue = $("#enter_trait").val();
+            if (traitValue === '') {
+                alert("Please enter trait value")
+            } else {
 
-        var newElement = '<div class="segDetRowOne remove-later">' +
-            '<h4>' + traitValue + '</h4>' +
-            '<div class="segDetBtnRow">' +
-            '<button type="button" class="btn saveBtn editBtn">Edit</button>' +
-            '<button type="button" class="btn saveBtn dltBtn">Delete</button>' +
-            '</div>' +
-            '</div>';
+                var newElement = '<div class="segDetRowOne remove-later">' +
+                    '<h4>' + traitValue + '</h4>' +
+                    '<div class="segDetBtnRow">' +
+                    '<button type="button" class="btn saveBtn editBtn">Edit</button>' +
+                    '<button type="button" class="btn saveBtn dltBtn">Delete</button>' +
+                    '</div>' +
+                    '</div>';
 
-        // Append the new element to the container
-        var sampleSizeDiv = $("#sample_size").parent().parent();
+                // Append the new element to the container
+                var sampleSizeDiv = $("#sample_size").parent().parent();
 
-        // Insert the new element before the "Sample Size" div
-        sampleSizeDiv.before(newElement);
-        traits.push(traitValue);
-        $("#enter_trait").val("");
-    }
+                // Insert the new element before the "Sample Size" div
+                sampleSizeDiv.before(newElement);
+                traits.push(traitValue);
+                $("#enter_trait").val("");
+            }
+        });
+
+        // Event delegation to handle click on dynamically added delete and edit buttons
+        $("#traits_row").on('click', '.dltBtn', function () {
+            var deletedIndex = $(this).closest('.segDetRowOne').index(); // Find the index of the deleted element
+            $(this).closest('.segDetRowOne').remove(); // Remove the parent element
+            traits.splice(deletedIndex, 1); // Remove the corresponding trait from the array
+        });
+
+        $("#traits_row").on('click', '.editBtn', function () {
+            var $parent = $(this).closest('.segDetRowOne');
+            var index = $parent.index(); // Find the index of the edited element
+            traits.splice(index, 1); // Remove the old value from the traits array
+            var $h4 = $parent.find('h4');
+            var oldValue = $h4.text().trim();
+            traits = traits.filter(item => item !== oldValue);
+            var $input = $('<input type="text" style="border: 2px solid"  class="editInput form-control" value="' + oldValue + '">');
+            $h4.replaceWith($input);
+            $(this).text('Save').removeClass('editBtn').addClass('saveEditBtn');
+        });
+
+        $("#traits_row").on('click', '.saveEditBtn', function () {
+            var $parent = $(this).closest('.segDetRowOne');
+            var $input = $parent.find('.editInput');
+            var newValue = $input.val().trim();
+            traits.push(newValue); // Add the new value to the traits array
+            $input.replaceWith('<h4>' + newValue + '</h4>');
+            $(this).text('Edit').removeClass('saveEditBtn').addClass('editBtn');
+        });
+
     });
 
-    // Event delegation to handle click on dynamically added delete and edit buttons
-    $("#traits_row").on('click', '.dltBtn', function() {
-        var deletedIndex = $(this).closest('.segDetRowOne').index(); // Find the index of the deleted element
-        $(this).closest('.segDetRowOne').remove(); // Remove the parent element
-        traits.splice(deletedIndex, 1); // Remove the corresponding trait from the array
-    });
 
-    $("#traits_row").on('click', '.editBtn', function() {
-        var $parent = $(this).closest('.segDetRowOne');
-        var index = $parent.index(); // Find the index of the edited element
-        traits.splice(index, 1); // Remove the old value from the traits array
-        var $h4 = $parent.find('h4');
-        var oldValue = $h4.text().trim();
-        traits = traits.filter(item => item !== oldValue);
-        var $input = $('<input type="text" style="border: 2px solid"  class="editInput form-control" value="' + oldValue + '">');
-        $h4.replaceWith($input);
-        $(this).text('Save').removeClass('editBtn').addClass('saveEditBtn');
-    });
-
-    $("#traits_row").on('click', '.saveEditBtn', function() {
-        var $parent = $(this).closest('.segDetRowOne');
-        var $input = $parent.find('.editInput');
-        var newValue = $input.val().trim();
-        traits.push(newValue); // Add the new value to the traits array
-        $input.replaceWith('<h4>' + newValue + '</h4>');
-        $(this).text('Edit').removeClass('saveEditBtn').addClass('editBtn');
-    });
-
-});
-
-
-    $("#save_traits").on('click', function (){
+    $("#save_traits").on('click', function () {
         var sample_size = $("#sample_size").val();
         $.ajax({
             url: '{% url 'dashboard' %}',
             type: 'POST',
-                data: {
-                    "sample_size": sample_size,
-                    "traits": traits
-                },
-                dataType: 'json',
-            success: function (data){
+            data: {
+                "sample_size": sample_size,
+                "traits": traits
+            },
+            dataType: 'json',
+            success: function (data) {
                 $("#all_segments").html(data.all_segments)
                 $(".remove-later").remove();
                 traits = []
@@ -366,146 +381,145 @@
             }
         })
     })
-  </script>
+</script>
 
-  <script>
-// code below is for updating the segments
-    $(document).ready(function() {
-    $(document).on('click', '#edit_segment', function() {
-        var divToDelete = document.querySelector('button#save_traits').closest('.segDetRowOne');
-        divToDelete.parentNode.removeChild(divToDelete);
-        var $parentRow = $(this).closest('tr');
+<script>
+    // code below is for updating the segments
+    $(document).ready(function () {
+        $(document).on('click', '#edit_segment', function () {
+            var divToDelete = document.querySelector('button#save_traits').closest('.segDetRowOne');
+            divToDelete.parentNode.removeChild(divToDelete);
+            var $parentRow = $(this).closest('tr');
 
-        // Clear previous traits
-        $("#traits_row").empty();
+            // Clear previous traits
+            $("#traits_row").empty();
 
-        // Iterate through each trait cell in the row
-        $parentRow.find('td').not(':last-child, .sample_size_value, .percentage, #segment_id' ).each(function() {
-            var traitValue = $(this).text().trim();
+            // Iterate through each trait cell in the row
+            $parentRow.find('td').not(':last-child, .sample_size_value, .percentage, #segment_id').each(function () {
+                var traitValue = $(this).text().trim();
 
-            // Check if the trait value is not empty
-            if (traitValue !== '') {
-                // Generate HTML for the trait segment
-                var traitHTML = '<div class="segDetRowOne edit_segments">' +
-                                    '<h4>' + traitValue + '</h4>' +
-                                    '<div class="segDetBtnRow">' +
-                                        '<button type="button" class="btn saveBtn editBtn">Edit</button>' +
-                                        '<button type="button" class="btn saveBtn dltBtn">Delete</button>' +
-                                    '</div>' +
-                                '</div>';
+                // Check if the trait value is not empty
+                if (traitValue !== '') {
+                    // Generate HTML for the trait segment
+                    var traitHTML = '<div class="segDetRowOne edit_segments">' +
+                        '<h4>' + traitValue + '</h4>' +
+                        '<div class="segDetBtnRow">' +
+                        '<button type="button" class="btn saveBtn editBtn">Edit</button>' +
+                        '<button type="button" class="btn saveBtn dltBtn">Delete</button>' +
+                        '</div>' +
+                        '</div>';
 
-                // Append the trait segment HTML to the traits container
-                $("#traits_row").append(traitHTML);
-            }
+                    // Append the trait segment HTML to the traits container
+                    $("#traits_row").append(traitHTML);
+                }
+            });
+
+            // Extract sample size from the cell with the class "sample_size_value" and set it to the sample_size input field
+            var sampleSize = $parentRow.find('.sample_size_value').text().trim();
+            var segment_id = $parentRow.find('#segment_id').text().trim();
+
+            // Append the "Sample Size" input field after the traits
+            var sampleSizeHTML = '<div class="segDetRowOne">' +
+                '<h3>Sample Size</h3>' +
+                '<div class="segDetBtnRow">' +
+                '<input type="text" id="sample_size" class="form-control" value="' + sampleSize + '">' +
+                '<input id="segment_id" hidden value="' + segment_id + '">' +
+                '<button type="button" class="btn saveBtn" id="save_traits">Save</button>' +
+                '</div>' +
+                '</div>';
+            $("#traits_row").after(sampleSizeHTML);
+
+            // Use sampleSize variable as needed
         });
 
-        // Extract sample size from the cell with the class "sample_size_value" and set it to the sample_size input field
-        var sampleSize = $parentRow.find('.sample_size_value').text().trim();
-        var segment_id = $parentRow.find('#segment_id').text().trim();
-
-        // Append the "Sample Size" input field after the traits
-        var sampleSizeHTML = '<div class="segDetRowOne">' +
-                                '<h3>Sample Size</h3>' +
-                                '<div class="segDetBtnRow">' +
-                                    '<input type="text" id="sample_size" class="form-control" value="' + sampleSize + '">' +
-                                    '<input id="segment_id" hidden value="' + segment_id + '">' +
-                                    '<button type="button" class="btn saveBtn" id="save_traits">Save</button>' +
-                                '</div>' +
-                            '</div>';
-        $("#traits_row").after(sampleSizeHTML);
-
-        // Use sampleSize variable as needed
-    });
-
-    $(document).on('click', '#save_traits', function() {
+        $(document).on('click', '#save_traits', function () {
 
 
-        // Iterate over the trait segments and push their values into the traitsList array
-        $(".segDetRowOne h4").each(function() {
-            var traitValue = $(this).text().trim();
-            traitsList.push(traitValue);
-        });
+            // Iterate over the trait segments and push their values into the traitsList array
+            $(".segDetRowOne h4").each(function () {
+                var traitValue = $(this).text().trim();
+                traitsList.push(traitValue);
+            });
 
-        // Log the traitsList array
-        var segment_id = document.getElementById("segment_id").value
-        var sample_size = document.getElementById("sample_size").value
+            // Log the traitsList array
+            var segment_id = document.getElementById("segment_id").value
+            var sample_size = document.getElementById("sample_size").value
 
-        $.ajax({
-            url: '/update/'+segment_id + '/',
-            type: 'POST',
+            $.ajax({
+                url: '/update/' + segment_id + '/',
+                type: 'POST',
                 data: {
                     "sample_size": sample_size,
                     "traits": traitsList,
                 },
                 dataType: 'json',
-            success: function (data){
-                $("#all_segments").html(data.all_segments)
-                $(".edit_segments").remove()
-                $(".remove-later").remove();
-                traitsList = []
-                $("#sample_size").val('');
-            },
-            error: function (xhr, status, error) {
-                traitsList = []
-            }
-        })
+                success: function (data) {
+                    $("#all_segments").html(data.all_segments)
+                    $(".edit_segments").remove()
+                    $(".remove-later").remove();
+                    traitsList = []
+                    $("#sample_size").val('');
+                },
+                error: function (xhr, status, error) {
+                    traitsList = []
+                }
+            })
 
 
-
+        });
     });
-});
 
 
-  </script>
+</script>
 
 
-  <script>
-      $("#audience_desc_btn").on('click', function (){
-          var audience_desc = $("#audience_desc").val()
-          $.ajax({
+<script>
+    $("#audience_desc_btn").on('click', function () {
+        var audience_desc = $("#audience_desc").val()
+        $.ajax({
             url: '{% url 'dashboard' %}',
             type: 'POST',
-                data: {
-                    "prompt": audience_desc
-                },
-                dataType: 'json',
-            success: function (data){
-                    $("#success_audience").removeAttr('hidden');
-                    setTimeout(function() {
-                        $("#success_audience").attr('hidden', true);
-                    }, 5000); // 5000 milliseconds = 5 seconds
-                },
+            data: {
+                "prompt": audience_desc
+            },
+            dataType: 'json',
+            success: function (data) {
+                $("#success_audience").removeAttr('hidden');
+                setTimeout(function () {
+                    $("#success_audience").attr('hidden', true);
+                }, 5000); // 5000 milliseconds = 5 seconds
+            },
 
         })
-      })
-  </script>
+    })
+</script>
 
-  <script>
-      // Add event listener for file input change
-document.getElementById('upload-file').addEventListener('change', function() {
-    var fileName = this.files[0].name; // Get the name of the uploaded file
-    document.getElementById('file-name-display').textContent = fileName; // Display file name
-});
+<script>
+    // Add event listener for file input change
+    document.getElementById('upload-file').addEventListener('change', function () {
+        var fileName = this.files[0].name; // Get the name of the uploaded file
+        document.getElementById('file-name-display').textContent = fileName; // Display file name
+    });
 
-// Add event listener for file input change
-document.getElementById('upload-file2').addEventListener('change', function() {
-    var fileName2 = this.files[0].name; // Get the name of the uploaded file
-    document.getElementById('file-name-display2').textContent = fileName2; // Display file name
-});
+    // Add event listener for file input change
+    document.getElementById('upload-file2').addEventListener('change', function () {
+        var fileName2 = this.files[0].name; // Get the name of the uploaded file
+        document.getElementById('file-name-display2').textContent = fileName2; // Display file name
+    });
 
-  </script>
+</script>
 
 
-  <script>
-    $(document).ready(function() {
+<script>
+    $(document).ready(function () {
         // When the file input changes (i.e., a file is selected), display its name
-        $('#upload-file').change(function() {
+        $('#upload-file').change(function () {
             var fileName = $(this).val().split('\\').pop(); // Get the file name without the path
             $('#file-name').text('Selected file: ' + fileName);
         });
 
         // When the Save button is clicked
-        $('#upload_segments_csv').click(function() {
+        $('#upload_segments_csv').click(function () {
             var fileData = $('#upload-file').prop('files')[0]; // Get the file data
             var formData = new FormData(); // Create a FormData object to send file data
 
@@ -519,17 +533,17 @@ document.getElementById('upload-file2').addEventListener('change', function() {
                 data: formData, // Data to send
                 processData: false, // Don't process the data
                 contentType: false, // Don't set contentType
-                success: function(response) {
+                success: function (response) {
                     // Handle success response
                     $("#all_segments").html(response.all_segments)
-                    if (response.csv_file === "file"){
+                    if (response.csv_file === "file") {
                         $("#csv_format").removeAttr('hidden');
-                    setTimeout(function() {
-                        $("#csv_format").attr('hidden', true);
-                    }, 5000);
+                        setTimeout(function () {
+                            $("#csv_format").attr('hidden', true);
+                        }, 5000);
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     // Handle error
                     console.error('Error uploading file:', error);
                 }
@@ -539,15 +553,15 @@ document.getElementById('upload-file2').addEventListener('change', function() {
 </script>
 
 
-  <script>
-      $(document).ready(function() {
-    $(document).on('click', '#delete_segment', function() {
-        var deleteSegmentId = $(this).attr('delete_segment_id');
-        $.ajax({
-                url: `/delete/`+deleteSegmentId+'/',
+<script>
+    $(document).ready(function () {
+        $(document).on('click', '#delete_segment', function () {
+            var deleteSegmentId = $(this).attr('delete_segment_id');
+            $.ajax({
+                url: `/delete/` + deleteSegmentId + '/',
                 type: 'GET', // Request type
                 data: '', // Data to send
-                success: function(response) {
+                success: function (response) {
                     // Handle success response
                     $("#all_segments").html(response.all_segments)
 
@@ -555,13 +569,59 @@ document.getElementById('upload-file2').addEventListener('change', function() {
             });
 
 
+        });
     });
-});
 
 
-            </script>
+</script>
+
+// analyze report script
+<script>
+    $(document).ready(function () {
+        $('#analyze_report_btn').click(function () {
+            var fileData = $('#upload-file2').prop('files')[0]; // Get the file data
+            var formData = new FormData(); // Create a FormData object to send file data
+            var email = $("#email").val()
+            var audience = $("#audience_desc").val()
+            if (!audience) {
+                alert("Audience description is empty!");
+            }
+            else {
+
+            formData.append('questions', fileData);
+            formData.append('email', email);
+
+            // Send AJAX request
+            $.ajax({
+                url: '{% url 'analyze_questions' %}',
+                type: 'POST', // Request type
+                data: formData, // Data to send
+                processData: false, // Don't process the data
+                contentType: false, // Don't set contentType
+                success: function (response) {
+                    if (response.status === 400) {
+                        $("#failed_analyze").removeAttr('hidden');
+                        $("#error_message").text(response.error_message)
+                        setTimeout(function () {
+                            $("#failed_analyze").attr('hidden', true);
+                        }, 5000);
+                    }
+                    else {
+                        $("#success_analyze").removeAttr('hidden');
+                        $("#success_message").text(response.success_message)
+                        setTimeout(function () {
+                            $("#success_analyze").attr('hidden', true);
+                        }, 5000);
+                    }
 
 
+                },
+            });
+            }
+        });
+    });
+</script>
 
-  </body>
+
+</body>
 </html>
