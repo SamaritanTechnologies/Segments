@@ -3,13 +3,11 @@ import os
 
 import pandas as pd
 from django.contrib import messages
-from .models import Segment, Traits, Audience
-from .utils import AnalyzeQuestions
+
+from .models import Segment, Traits, Audience, Questions
 
 
 def in_memory_file_to_temp(in_memory_file):
-    # path = default_storage.save('tmp/%s' % in_memory_file.name, ContentFile(in_memory_file.read()))
-
     is_folder = os.path.isdir('tmp')
 
     if not is_folder:
@@ -33,24 +31,23 @@ class DataframeUtil(object):
 ANALYZER_HEADER = ['questions']
 
 
-def data_scrap(file_path, request, audience):
+def data_scrap(file_path, request):
     dataframe = DataframeUtil.get_validated_dataframe(file_path)
-    parser_obj = CSVToJsonParser(dataframe, request, audience)
+    parser_obj = CSVToJsonParser(dataframe, request)
     headers = parser_obj.get_header()
     if headers:
         return headers, 400
     titles = parser_obj.get_titles()
     if titles:
         return titles, 400
-    created, status = parser_obj.get_data()
-    return created, status
+    parser_obj.get_data()
+    return True, 201
 
 
 class CSVToJsonParser:
 
-    def __init__(self, df, request, audience):
+    def __init__(self, df, request):
         self.request = request
-        self.audience = audience
         self.df = df
         self.df.columns = self.df.columns.str.replace('\n', '')
         self.df.columns = self.df.columns.str.strip()
@@ -75,8 +72,9 @@ class CSVToJsonParser:
 
     def get_data(self):
         questions_data = [question['questions'] for question in self.data]
-        created, status = AnalyzeQuestions().analyze_report(questions_data, self.audience)
-        return created, status
+        audience_instance = Audience.objects.first()
+        for text in questions_data:
+            created = Questions.objects.create(question=text, audience=audience_instance)
 
 
 class CsvParser:

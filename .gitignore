@@ -9,3 +9,4 @@
 *.png
 *.logsendgrid.env
 tmp/
+/celerybeat-schedule.db

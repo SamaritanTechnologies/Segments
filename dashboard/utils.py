@@ -19,9 +19,8 @@ class DeleteObjectsOnRefresh:
 
 class AnalyzeQuestions:
 
-    def analyze_report(self, questions, audience_text):
+    def analyze_report(self, questions, audience):
         segments = Segment.objects.all()
-        audience = Audience.objects.create(prompt=audience_text)
         analyze_report_job = None
         for segment in segments:
             for _ in range(segment.sample_size):
@@ -45,7 +44,7 @@ class AnalyzeQuestions:
                             generated_answer = generated_answer[len("Answer:"):].strip()
                     except Exception as e:
                         print(f"Failed to get a response after several retries: {e}")
-                    question, _ = Questions.objects.get_or_create(question=question_text, audience=audience)
+                    question = Questions.objects.filter(question=question_text, audience=audience).first()
                     answer = Answers.objects.create(answer=generated_answer)
                     analyze_report_job.question.add(question)
                     analyze_report_job.answer.add(answer)

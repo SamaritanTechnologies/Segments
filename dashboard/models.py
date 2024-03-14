@@ -7,6 +7,8 @@ from django.urls import reverse
 
 class Audience(models.Model):
     prompt = models.TextField()
+    email = models.EmailField(null=True, blank=True)
+    process_completed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.prompt
