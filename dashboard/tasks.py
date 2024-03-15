@@ -2,7 +2,7 @@ from celery import shared_task
 
 from .email_service import EmailService
 from .models import Questions, Audience
-from .utils import AnalyzeQuestions, ExportCsv
+from .utils import AnalyzeQuestions, ExportCsv, DeleteObjectsOnRefresh
 
 
 @shared_task
@@ -19,3 +19,4 @@ def data_analyzer():
                                                                attachment_content=csv_report,
                                                                attachment_filename="export_file.csv",
                                                                attachment_content_type="text/csv")
+        DeleteObjectsOnRefresh().delete_instances()
