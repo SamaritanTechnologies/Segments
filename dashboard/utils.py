@@ -8,19 +8,22 @@ from .models import Segment, AnalyzeReport, Questions, Answers, Traits, Audience
 
 class DeleteObjectsOnRefresh:
 
+    def __init__(self, user):
+        self.user = user
+
     def delete_instances(self):
-        Questions.objects.all().delete()
-        Answers.objects.all().delete()
-        AnalyzeReport.objects.all().delete()
-        Audience.objects.all().delete()
-        Segment.objects.all().delete()
-        Traits.objects.all().delete()
+        Questions.objects.filter(audience__user=self.user).delete()
+        Answers.objects.filter(user=self.user).delete()
+        AnalyzeReport.objects.filter(segment__user=self.user).delete()
+        Audience.objects.filter(user=self.user).delete()
+        Segment.objects.filter(user=self.user).delete()
+        Traits.objects.filter(segment__user=self.user).delete()
 
 
 class AnalyzeQuestions:
 
     def analyze_report(self, questions, audience):
-        segments = Segment.objects.all()
+        segments = Segment.objects.filter(user=audience.user)
         analyze_report_job = None
         for segment in segments:
             for _ in range(segment.sample_size):
@@ -45,7 +48,7 @@ class AnalyzeQuestions:
                     except Exception as e:
                         print(f"Failed to get a response after several retries: {e}")
                     question = Questions.objects.filter(question=question_text, audience=audience).first()
-                    answer = Answers.objects.create(answer=generated_answer)
+                    answer = Answers.objects.create(user=segment.user, answer=generated_answer)
                     analyze_report_job.question.add(question)
                     analyze_report_job.answer.add(answer)
                     analyze_report_job.save()
@@ -70,7 +73,7 @@ class ExportCsv:
         writer.writerow(row)
 
         for rule in qs:
-            answers = [a.answer for a in rule.answer.all()]
+            answers = [a.answer for a in rule.answer.filter(user=audience.user)]
             answers += [''] * (len(all_questions) - len(answers))
             writer.writerow([rule.trait, rule.segment.sample_size, rule.audience.prompt] + answers)
         return response

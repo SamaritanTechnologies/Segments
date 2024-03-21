@@ -11,7 +11,7 @@ class TraitsAdmin(admin.ModelAdmin):
 
 @admin.register(Segment)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'sample_size')
+    list_display = ('id', 'user', 'sample_size')
 
 
 @admin.register(AnalyzeReport)
@@ -19,6 +19,10 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('id', 'audience', 'trait', 'loop')
 
 
-admin.site.register(Audience)
+@admin.register(Audience)
+class AudienceAdmin(admin.ModelAdmin):
+    list_display = ('id', 'prompt', 'email', 'process_completed')
+
+
 admin.site.register(Questions)
 admin.site.register(Answers)

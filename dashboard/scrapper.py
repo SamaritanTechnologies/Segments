@@ -72,7 +72,7 @@ class CSVToJsonParser:
 
     def get_data(self):
         questions_data = [question['questions'] for question in self.data]
-        audience_instance = Audience.objects.first()
+        audience_instance = Audience.objects.filter(user=self.request.user).first()
         for text in questions_data:
             created = Questions.objects.create(question=text, audience=audience_instance)
 
@@ -107,7 +107,7 @@ class CsvParser:
             csv_file = self.upload_csv(file)
             return csv_file
         else:
-            segment = Segment.objects.create(sample_size=sample_size)
+            segment = Segment.objects.create(user=request.user, sample_size=sample_size)
             for item in traits:
                 Traits.objects.create(title=item, segment=segment)
 
@@ -120,7 +120,7 @@ class CsvParser:
         traits = request.POST.getlist("traits[]")
         segment_id = segment.id
         segment.delete()
-        segment = Segment.objects.create(id=segment_id, sample_size=sample_size)
+        segment = Segment.objects.create(id=segment_id, sample_size=sample_size, user=request.user)
         for item in traits:
             Traits.objects.create(title=item, segment=segment)
 
