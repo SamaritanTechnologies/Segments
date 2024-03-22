@@ -44,6 +44,22 @@
   <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
     <form method="post">
         {% csrf_token %}
+        {% if form.errors %}
+    <div id="errors">
+        <div class="inner">
+            <p>There were some errors in the information you entered. Please correct the
+                following:</p>
+            <ul>
+                {% for field in form %}
+                    {% if field.errors %}
+                        <li class="alert alert-danger" role="alert">{{ field.label }}: {{ field.errors|striptags }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endif %}
+
 
       <div class="form-outline mb-4">
           <label class="form-label" for="loginName">Username</label>

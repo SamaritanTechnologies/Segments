@@ -29,11 +29,12 @@
         <div class="logoRow">
             <img src="{% static 'images/traitslogo.jpeg' %}" alt=""/>
             <p style="font-size: 22px;">Hello {{ request.user }}</p>
+            <a href="{% url 'logout' %}" class="btn btn-primary mb-4">Logout</a>
         </div>
     </div>
 
 
-    <div class="contentMain">
+    <div class="contentMain mt-5">
 
         <div class="cMRowOne">
             <h1>
