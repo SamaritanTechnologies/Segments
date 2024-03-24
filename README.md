@@ -11,4 +11,4 @@ Running celery in Background
 celery -A Segments worker -l info
 Running celery beat in Background
 
-celery -A Segments beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+celery -A Segments beat -l info
