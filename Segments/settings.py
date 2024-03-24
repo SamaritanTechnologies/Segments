@@ -33,14 +33,14 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'accounts',
     'dashboard',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django_celery_beat'
+    'django.contrib.staticfiles'
 ]
 
 MIDDLEWARE = [
@@ -114,6 +114,7 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+AUTH_USER_MODEL = 'accounts.User'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -146,3 +147,11 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'login'
+
+CELERY_BEAT_SCHEDULE = {
+    'add-every-minute': {
+        'task': 'dashboard.tasks.data_analyzer',
+        'schedule': crontab(minute='*'),
+        'args': None
+    },
+}

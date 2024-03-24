@@ -1,10 +1,8 @@
-import json
-from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Sum
 from django.urls import reverse
-from django_celery_beat.models import IntervalSchedule, PeriodicTask
-from django.utils import timezone
+
+from accounts.models import User
 
 
 class Audience(models.Model):
@@ -12,34 +10,6 @@ class Audience(models.Model):
     prompt = models.TextField()
     email = models.EmailField(null=True, blank=True)
     process_completed = models.BooleanField(default=False)
-    task = models.OneToOneField(
-        PeriodicTask,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True
-    )
-
-    def setup_task(self, interval):
-        self.task = PeriodicTask.objects.create(
-            name=f"{self.prompt}-{self.id}",
-            task='data_analyzer',
-            interval=interval,
-            args=json.dumps([self.id]),
-            start_time=timezone.now()
-        )
-        self.save()
-
-    def create_interval(self):
-        schedule = IntervalSchedule.objects.create(every=1, period='minutes')
-        return schedule
-
-    def delete(self, *args, **kwargs):
-        if self.task is not None:
-            self.task.delete()
-        return super(self.__class__, self).delete(*args, **kwargs)
-
-    def __str__(self):
-        return self.prompt
 
 
 class Segment(models.Model):

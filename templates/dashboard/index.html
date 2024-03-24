@@ -28,7 +28,7 @@
         <p>Proprietary & Confidential. All Rights Reserved. Avenue Group 2024.</p>
         <div class="logoRow">
             <img src="{% static 'images/traitslogo.jpeg' %}" alt=""/>
-            <p style="font-size: 22px;">Hello {{ request.user }}</p>
+            <p style="font-size: 22px;">Hello {{ request.user.full_name }}</p>
             <a href="{% url 'logout' %}" class="btn btn-primary mb-4">Logout</a>
         </div>
     </div>
