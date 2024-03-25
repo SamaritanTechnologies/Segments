@@ -79,7 +79,7 @@ class CSVToJsonParser:
 
 class CsvParser:
 
-    def upload_csv(self, file):
+    def upload_csv(self, file, request):
         decoded_file = file.read().decode('utf-8').splitlines()
         reader = csv.reader(decoded_file)
         headers = next(reader)
@@ -89,7 +89,7 @@ class CsvParser:
                 sample_size = data['sample_size']
             except:
                 return "file"
-            segment = Segment.objects.create(sample_size=sample_size)
+            segment = Segment.objects.create(sample_size=sample_size, user=request.user)
             for key, value in data.items():
                 if key != "sample_size" and value != "":
                     Traits.objects.create(title=value, segment=segment)
@@ -104,7 +104,7 @@ class CsvParser:
         traits = request.POST.getlist("traits[]")
         file = request.FILES.get('csvfile')
         if file:
-            csv_file = self.upload_csv(file)
+            csv_file = self.upload_csv(file, request)
             return csv_file
         else:
             segment = Segment.objects.create(user=request.user, sample_size=sample_size)
