@@ -48,7 +48,43 @@
   <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
    <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+       {% if form.errors %}
+    <div id="errors">
+        <div class="inner">
+            <p>There were some errors in the information you entered. Please correct the
+                following:</p>
+            <ul>
+                {% for field in form %}
+                    {% if field.errors %}
+                        <li class="alert alert-danger" role="alert">{{ field.label }}: {{ field.errors|striptags }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endif %}
+       <p>
+    <label for="id_email">Email:</label>
+    <input type="email" name="email" placeholder="Email" class="form-control" maxlength="320" autofocus="" required="" id="id_email">
+
+
+  </p>
+        <p>
+    <label for="id_email">Full Name:</label>
+    <input type="text" name="full_name" placeholder="Full Name" class="form-control" maxlength="320" autofocus="" required="">
+
+
+  </p><p>
+    <label for="id_email">Password:</label>
+    <input type="password" name="password1" placeholder="Password" class="form-control" maxlength="320" autofocus="" required="" id="id_email">
+
+
+  </p><p>
+    <label for="id_email">Retype Password:</label>
+    <input type="password" name="password2" placeholder="Retype Password" class="form-control" maxlength="320" autofocus="" required="" id="id_email">
+
+
+  </p>
         <button type="submit" class="btn btn-primary btn-block mb-4">Sign Up</button>
 
       <!-- Register buttons -->
