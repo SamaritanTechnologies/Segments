@@ -12,6 +12,7 @@ def data_analyzer():
         audience = Audience.objects.filter(user=user).first()
         if audience and not audience.process_completed:
             audience.process_completed = True
+            audience.save()
             questions_data = [question.question for question in Questions.objects.filter(audience=audience)]
             analyzer = AnalyzeQuestions().analyze_report(questions_data, audience)
             csv_report = ExportCsv().csv_export(audience)
@@ -20,5 +21,5 @@ def data_analyzer():
                                                                    attachment_filename="export_file.csv",
                                                                    attachment_content_type="text/csv")
             print(send_email, 'email')
-            audience.save()
+
             DeleteObjectsOnRefresh(user).delete_instances()

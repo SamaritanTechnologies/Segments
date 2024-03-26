@@ -25,7 +25,7 @@ class Segment(models.Model):
     @property
     def percentage_division(self):
         if self.sample_size:
-            total_sample_size = Segment.objects.aggregate(total=Sum('sample_size'))['total']
+            total_sample_size = Segment.objects.filter(user=self.user).aggregate(total=Sum('sample_size'))['total']
             if total_sample_size == 0:
                 return 'N/A'
 
