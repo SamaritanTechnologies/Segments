@@ -546,6 +546,9 @@
                             $("#csv_format").attr('hidden', true);
                         }, 5000);
                     }
+                    var fileInput = document.getElementById('upload-file');
+                    fileInput.value = null; // Clear the file input
+                    document.getElementById('file-name-display').textContent = '';
                 },
                 error: function (xhr, status, error) {
                     // Handle error
@@ -587,7 +590,10 @@
             var formData = new FormData(); // Create a FormData object to send file data
             var email = $("#email").val()
             var audience = $("#audience_desc").val()
-            if (!audience) {
+            if (!fileData) {
+                alert("Please upload question csv!");
+            }
+            else if (!audience) {
                 alert("Audience description is empty!");
             }
             else {
@@ -618,6 +624,10 @@
                             $("#success_analyze").attr('hidden', true);
                         }, 5000);
                     }
+                    var fileInput = document.getElementById('upload-file2');
+                    fileInput.value = null; // Clear the file input
+                    document.getElementById('file-name-display2').textContent = '';
+                    document.getElementById('audience_desc').value = null
 
 
                 },
